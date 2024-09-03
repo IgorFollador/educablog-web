@@ -1,95 +1,91 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
 
-export default function Home() {
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import PostList from '../components/PostList';
+import SearchBar from '../components/SearchBar';
+import Pagination from '../components/Pagination';
+
+const Home = () => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+
+  useEffect(() => {
+    fetchPosts(); // Carregar posts iniciais
+  }, [currentPage]);
+
+  const fetchPosts = async (query = '') => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    if (!apiUrl) {
+      setError('A URL da API não está definida corretamente. Verifique as variáveis de ambiente.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = query
+        ? await axios.get(`${apiUrl}/posts/search`, {
+            params: { query, limite: 10, pagina: currentPage },
+          })
+        : await axios.get(`${apiUrl}/posts`, {
+            params: {
+              limite: 10,
+              pagina: currentPage,
+            },
+          });
+
+      console.log('Dados recebidos:', response.data);
+      setPosts(response.data);
+      setTotalPages(Math.ceil(response.headers['x-total-count'] / 10)); // Ajustar na API para retornar estes dados
+      setError('');
+    } catch (err) {
+      console.error('Erro ao buscar posts:', err);
+
+      if (axios.isAxiosError(err)) {
+        if (err.response) {
+          setError(`Erro: ${err.response.status} - ${err.response.statusText}`);
+        } else if (err.request) {
+          setError('Não foi possível obter resposta da API. Verifique a conectividade e as configurações de rede.');
+        } else {
+          setError(`Erro ao configurar a requisição: ${err.message}`);
+        }
+      } else {
+        setError('Ocorreu um erro inesperado.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1); // Resetar para a primeira página ao fazer uma nova busca
+    fetchPosts(query);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <div className="max-w-3xl mx-auto p-5">
+      <h1 className="text-3xl font-bold text-center mb-6">EducaBlog - Gestão de postagens escolares</h1>
+      <SearchBar onSearch={handleSearch} />
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+      {loading && <p className="text-center mt-4">Carregando posts...</p>}
+      {error && <p className="text-center text-red-500 mt-4">{error}</p>}
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      <PostList posts={posts} />
+      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+    </div>
   );
-}
+};
+
+export default Home;
