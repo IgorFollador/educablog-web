@@ -1,62 +1,54 @@
-import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import axios from "axios";
+import NextAuth from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import axios from 'axios';
 
-export const authOptions = {
+// Configuração das opções do NextAuth
+const authOptions = {
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        login: { label: "Login", type: "text" },
-        senha: { label: "Senha", type: "password" },
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Senha', type: 'password' },
       },
       async authorize(credentials) {
         try {
-          // Usando a variável de ambiente para a URL da API
-          const res = await axios.post(`${process.env.API_URL}/autenticacao/signin`, {
-            login: credentials?.login,
-            senha: credentials?.senha,
+          // Faz a requisição para a API de autenticação
+          const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/autenticacao/signin`, {
+            login: credentials?.email,
+            senha: credentials?.password,
           });
 
-          const user = res.data;
-
-          // Se o token for retornado com sucesso
-          if (user.token) {
-            return {
-              id: user.id, // Defina os campos que desejar passar para a sessão
-              token: user.token,
-            };
+          // Verifica se a resposta contém um token
+          if (data.token) {
+            return { token: data.token }; // Retorna o token para armazenar na sessão
           }
-
-          // Retornar null caso a autenticação falhe
           return null;
         } catch (error) {
-          console.error("Erro ao autenticar:", error);
+          console.error('Erro de autenticação:', error);
           return null;
         }
       },
     }),
   ],
   callbacks: {
-      // Adicione o token JWT ao token do NextAuth
     async jwt({ token, user }) {
       if (user) {
-        token.accessToken = user.token;
+        token.token = user.token; // Armazena o token JWT no token da sessão
       }
       return token;
     },
-    // Inclua o token na sessão para uso no lado do cliente
     async session({ session, token }) {
-      session.accessToken = token.accessToken;
+      session.user = { token: token.token }; // Inclui o token na sessão para uso nas páginas
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: '/auth/signin', // Página de login personalizada
+    signIn: '/auth/signin', // Página de login
+    error: '/auth/error', // Página de erro (opcional)
   },
+  secret: process.env.NEXTAUTH_SECRET, // Chave secreta para o NextAuth
 };
 
 const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST };
+export { handler as GET, handler as POST }; // Exporta os métodos GET e POST

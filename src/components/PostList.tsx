@@ -1,5 +1,3 @@
-import React from 'react';
-
 type Post = {
   id: string;
   titulo: string;
@@ -16,9 +14,17 @@ type Post = {
 
 interface PostListProps {
   posts: Post[];
+  isAdmin?: boolean;
+  onEdit?: (postId: string) => void;
+  onDelete?: (postId: string) => void;
 }
 
-const PostList: React.FC<PostListProps> = ({ posts }) => {
+const PostList: React.FC<PostListProps> = ({ posts = [], isAdmin = false, onEdit, onDelete }) => {
+  // Adicionando uma verificação para garantir que 'posts' é um array
+  if (!Array.isArray(posts) || posts.length === 0) {
+    return <p>Nenhuma postagem encontrada.</p>;
+  }
+
   return (
     <ul className="space-y-6">
       {posts.map((post) => (
@@ -38,6 +44,23 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
           <small className="text-gray-500">
             Publicado em: {new Date(post.dataCriacao).toLocaleDateString()}
           </small>
+          {/* Ações de admin */}
+          {isAdmin && (
+            <div className="flex space-x-2 mt-4">
+              <button
+                onClick={() => onEdit && onEdit(post.id)}
+                className="py-1 px-3 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Editar
+              </button>
+              <button
+                onClick={() => onDelete && onDelete(post.id)}
+                className="py-1 px-3 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Deletar
+              </button>
+            </div>
+          )}
         </li>
       ))}
     </ul>
