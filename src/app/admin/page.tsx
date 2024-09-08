@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -34,29 +34,19 @@ const AdminPage = () => {
   const [totalPages, setTotalPages] = useState<number>(1);
   const router = useRouter();
 
-  useEffect(() => {
-    if (status === 'unauthenticated' || !session?.user.token) {
-      router.push('/auth/signin');
-    } else {
-      fetchPosts(currentPage);
-    }
-  }, [status, session, router, currentPage]);
-
-  const fetchPosts = async (page: number) => {
+  const fetchPosts = useCallback(async (page: number) => {
     setLoading(true);
     setError('');
-
+  
     try {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/posts/admin`, {
         params: { limite: 10, pagina: page },
         headers: {
-          Authorization: `Bearer ${session?.user.token}`,
+          Authorization: `Bearer ${session?.user?.token}`,
         },
       });
-
-      setPosts(response.data); 
-
-      // TODO: ajustar total de itens
+  
+      setPosts(response.data);
       setTotalPages(Math.ceil((response.data.total || 0) / 10));
     } catch (err) {
       console.error('Erro ao buscar postagens:', err);
@@ -64,7 +54,20 @@ const AdminPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [session?.user?.token]);
+  
+
+  useEffect(() => {
+    if (status === 'unauthenticated' || !session?.user?.token) {
+      console.log("============");
+      console.log(status);
+      console.log(session);
+      console.log("DESLOGANDO.");
+      router.push('/auth/signin');
+    } else {
+      fetchPosts(currentPage);
+    }
+  }, [status, session, router, currentPage, fetchPosts]);
 
   const handleEdit = (postId: string) => {
     router.push(`/admin/edit/${postId}`);
@@ -80,7 +83,7 @@ const AdminPage = () => {
       try {
         await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/posts/${selectedPostId}`, {
           headers: {
-            Authorization: `Bearer ${session?.user.token}`,
+            Authorization: `Bearer ${session?.user?.token}`,
           },
         });
 

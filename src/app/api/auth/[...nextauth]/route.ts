@@ -1,9 +1,9 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
+import { jwtDecode } from "jwt-decode";
 
-// Configuração das opções do NextAuth
-const authOptions = {
+const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -13,15 +13,22 @@ const authOptions = {
       },
       async authorize(credentials) {
         try {
-          // Faz a requisição para a API de autenticação
           const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/autenticacao/signin`, {
             login: credentials?.email,
             senha: credentials?.password,
           });
 
-          // Verifica se a resposta contém um token
           if (data.token) {
-            return { token: data.token }; // Retorna o token para armazenar na sessão
+            const decodedToken = jwtDecode(data.token);
+            const exp = decodedToken.exp || 0;
+
+            return {
+              id: "91590074-69f6-45c0-8421-25a6f14be99e",
+              token: data.token,
+              exp,
+              name: credentials?.email,
+              email: credentials?.email,
+            };
           }
           return null;
         } catch (error) {
@@ -34,21 +41,31 @@ const authOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.token = user.token; // Armazena o token JWT no token da sessão
+        token.token = user.token as string;
+        token.exp = user.exp;
       }
       return token;
     },
     async session({ session, token }) {
-      session.user = { token: token.token }; // Inclui o token na sessão para uso nas páginas
+      session.user = { ...session.user, token: token.token as string };
+
+      if (token.exp) {
+        session.expires = new Date(token.exp as number * 1000).toISOString();
+      }
       return session;
     },
   },
-  pages: {
-    signIn: '/auth/signin', // Página de login
-    error: '/auth/error', // Página de erro (opcional)
+  session: {
+    strategy: 'jwt',
+    maxAge: 24 * 60 * 60,
   },
-  secret: process.env.NEXTAUTH_SECRET, // Chave secreta para o NextAuth
-};
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,
+  },
+  pages: {
+    signIn: '/auth/signin',
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+});
 
-const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST }; // Exporta os métodos GET e POST
+export { handler as GET, handler as POST };
