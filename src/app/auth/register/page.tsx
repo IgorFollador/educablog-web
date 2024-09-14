@@ -121,7 +121,9 @@ const RegisterPage = () => {
               <label htmlFor="cpf" className="block text-sm font-medium text-gray-700">
                 CPF
               </label>
-              <input
+              <input 
+                maxLength="14" 
+                placeholder="000.000.000-00"
                 type="text"
                 id="cpf"
                 value={cpf}
@@ -135,9 +137,10 @@ const RegisterPage = () => {
                 Telefone
               </label>
               <input
+                maxLength="15" 
+                placeholder="(99)99999-9999"
                 type="text"
                 id="phone"
-
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
