@@ -16,18 +16,17 @@ const EditPostPage = () => {
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
-  const { id } = useParams(); // Captura o ID da URL dinamicamente
+  const { id } = useParams(); 
 
   useEffect(() => {
-    // Redirecionar para login se não autenticado
+
     if (status === 'unauthenticated' || !session?.user?.token) {
       router.push('/auth/signin');
     }
   }, [status, session, router]);
 
-  // Carregar dados da postagem ao abrir a página
   useEffect(() => {
-    // Verifica se o postId existe e se o token está disponível
+
     if (id && session?.user?.token) {
       const fetchPostData = async () => {
         try {
@@ -35,12 +34,12 @@ const EditPostPage = () => {
             `https://apl-back-educablog-1.onrender.com/posts/${id}`,
             {
               headers: {
-                Authorization: `Bearer ${session.user.token}`, // Envia o token de autenticação
+                Authorization: `Bearer ${session.user.token}`, 
               },
             }
           );
           
-          // Define os valores no estado
+  
           const post = response.data;
           setTitulo(post.titulo);
           setDescricao(post.descricao);
@@ -53,7 +52,7 @@ const EditPostPage = () => {
         }
       };
 
-      fetchPostData(); // Chama a função para buscar os dados
+      fetchPostData(); 
     }
   }, [id, session]);
 
@@ -77,12 +76,12 @@ const EditPostPage = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${session?.user?.token}`, // Autenticação com token
+            Authorization: `Bearer ${session?.user?.token}`, 
           },
         }
       );
 
-      // Redirecionar para a página de listagem após a edição
+     
       router.push('/admin/');
     } catch (err) {
       console.error('Erro ao editar postagem:', err);
