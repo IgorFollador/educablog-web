@@ -5,6 +5,8 @@ import axios from 'axios';
 import PostList from '../components/PostList';
 import SearchBar from '../components/SearchBar';
 import Pagination from '../components/Pagination';
+import NavBar from '../components/NavBar';
+import Footer from '../components/Footer';
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -75,15 +77,19 @@ const Home = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-5">
-      <h1 className="text-3xl font-bold text-center mb-6">EducaBlog - Gestão de postagens escolares</h1>
-      <SearchBar onSearch={handleSearch} />
+    <div>
+      <NavBar/>
+      <div className="max-w-3xl mx-auto m-10 p-4 pt-16">
+        <h1 className="text-3xl font-bold text-center mb-6">EducaBlog - Gestão de postagens escolares</h1>
+        <SearchBar onSearch={handleSearch} />
 
-      {loading && <p className="text-center mt-4">Carregando posts...</p>}
-      {error && <p className="text-center text-red-500 mt-4">{error}</p>}
-
-      <PostList posts={posts} />
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+        {loading && <p className="text-center mt-4">Carregando posts...</p>}
+        {error && <p className="text-center text-red-500 mt-4">{error}</p>}
+        
+        <PostList posts={posts} />
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+      </div>
+      <Footer/>
     </div>
   );
 };
