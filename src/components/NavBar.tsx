@@ -3,9 +3,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation'
 
-const Navbar = () => {
+const Navbar = ({isLoggedIn}: { isLoggedIn: Boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
   const handleLogin = () => {

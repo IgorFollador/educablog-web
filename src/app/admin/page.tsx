@@ -37,7 +37,7 @@ const AdminPage = () => {
   const fetchPosts = useCallback(async (page: number) => {
     setLoading(true);
     setError('');
-  
+
     try {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/posts/admin`, {
         params: { limite: 10, pagina: page },
@@ -45,7 +45,7 @@ const AdminPage = () => {
           Authorization: `Bearer ${session?.user?.token}`,
         },
       });
-  
+
       setPosts(response.data);
       setTotalPages(Math.ceil((response.data.total || 0) / 10));
     } catch (err) {
@@ -55,19 +55,12 @@ const AdminPage = () => {
       setLoading(false);
     }
   }, [session?.user?.token]);
-  
 
   useEffect(() => {
-    if (status === 'unauthenticated' || !session?.user?.token) {
-      console.log("============");
-      console.log(status);
-      console.log(session);
-      console.log("DESLOGANDO.");
-      router.push('/auth/signin');
-    } else {
+    if (status === 'authenticated' && session?.user?.token) {
       fetchPosts(currentPage);
     }
-  }, [status, session, router, currentPage, fetchPosts]);
+  }, [session, status, currentPage, fetchPosts]);
 
   const handleEdit = (postId: string) => {
     router.push(`/admin/edit/${postId}`);
