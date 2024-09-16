@@ -32,7 +32,7 @@ const PostList: React.FC<PostListProps> = ({ posts = [], isAdmin = false, onEdit
           <h2 className="text-2xl font-semibold mb-2">{post.titulo}</h2>
           <p className="mb-4">{post.descricao}</p>
           {post.imagemUrl && (
-            <div className="relative w-full h-64 mb-4">
+            <div className="w-full h-64 mb-4">
               <img
                 src={post.imagemUrl}
                 alt={post.titulo}

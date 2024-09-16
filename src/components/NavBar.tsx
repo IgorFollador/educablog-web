@@ -1,23 +1,22 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
 
   const handleLogin = () => {
-    setIsLoggedIn(true);
-    // Lógica de login pode ser adicionada aqui
+    router.push('/auth/signin');
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
-    // Lógica de logout pode ser adicionada aqui
+    router.push('/');
   };
 
   return (
-    <header>
       <nav className="bg-blue-950 fixed top-0 left-0 w-full z-100 shadow-black">
         <div className="container mx-auto flex justify-between items-center">
           
@@ -103,7 +102,6 @@ const Navbar = () => {
           </div>
         )}
       </nav>
-    </header>
   );
 };
 
