@@ -3,7 +3,7 @@ import Navbar from './NavBar';
 const Header = () => {
   return (
     <header>
-        <Navbar />
+        <Navbar isLoggedIn={false} />
     </header>
   );
 };

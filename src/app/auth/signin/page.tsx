@@ -3,6 +3,8 @@
 import { useState, FormEvent } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
 // import { createSession } from '@/lib/session';
 
 const SignInPage = () => {
@@ -45,7 +47,22 @@ const SignInPage = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded shadow-lg">
-        <h2 className="text-2xl font-bold text-center">Login</h2>
+        <div className="flex justify-center p-5 bg-blue-950">
+          <Link href="/">
+            <div className="flex items-center">
+              <Image
+                src="/logo.png"
+                width={20}
+                height={20}
+                className='mr-1'
+                alt="Logo"
+              />
+              <span className="text-white text-2xl">EducaBlog</span>
+            </div>
+          </Link>
+        </div>
+        <h2 className="text-2xl font-bold text-center">Painel Administrativo</h2>
+        <small className="block text-center text-gray-500">Insira suas credenciais para acessar</small>
         {error && <p className="text-center text-red-500">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
