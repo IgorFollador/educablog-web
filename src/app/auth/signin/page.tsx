@@ -47,7 +47,7 @@ const SignInPage = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded shadow-lg">
-        <div className="md:flex-1 md:justify-start flex justify-center p-5 bg-blue-950">
+        <div className="flex justify-center p-5 bg-blue-950">
           <Link href="/">
             <div className="flex items-center">
               <Image
