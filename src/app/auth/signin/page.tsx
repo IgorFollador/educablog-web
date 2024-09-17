@@ -3,6 +3,7 @@
 import { useState, FormEvent } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+// import { createSession } from '@/lib/session';
 
 const SignInPage = () => {
   const [email, setEmail] = useState<string>('');
@@ -24,11 +25,14 @@ const SignInPage = () => {
         callbackUrl: '/admin', // URL para redirecionar após login bem-sucedido
       });
 
+      console.log(result);
+
       setLoading(false);
 
       if (result?.error) {
         setError('Login ou senha inválidos. Tente novamente.');
       } else {
+        // await createSession(result.user.id)
         // Redirecionar para /admin após login bem-sucedido
         router.push('/admin');
       }

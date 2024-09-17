@@ -2,17 +2,18 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation'
+import { signIn, signOut } from 'next-auth/react';
 
 const Navbar = ({isLoggedIn}: { isLoggedIn: Boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
   const handleLogin = () => {
-    router.push('/auth/signin');
+    signIn();
   };
 
   const handleLogout = () => {
-    router.push('/');
+    signOut({ callbackUrl: '/' });
   };
 
   return (

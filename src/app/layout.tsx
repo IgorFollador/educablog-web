@@ -17,11 +17,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className="h-full">
-      <body className={`${inter.className} h-full`}>
         <ClientSessionProvider>
-          {children}
+          <body className={`${inter.className} h-full`}>
+            {children}
+          </body>
         </ClientSessionProvider>
-      </body>
     </html>
   );
 }
