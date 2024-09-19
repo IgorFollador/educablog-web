@@ -16,12 +16,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR">
-      <body className={inter.className}>
+    <html lang="pt-BR" className="h-full">
         <ClientSessionProvider>
-          {children}
+          <body className={`${inter.className} h-full`}>
+            {children}
+          </body>
         </ClientSessionProvider>
-      </body>
     </html>
   );
 }

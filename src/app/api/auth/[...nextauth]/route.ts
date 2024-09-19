@@ -20,7 +20,7 @@ const handler = NextAuth({
 
           if (data.token) {
             const decodedToken = jwtDecode(data.token);
-            const exp = decodedToken.exp || 0;
+            const exp = decodedToken.exp as number * 1000 || 0;
 
             return {
               id: "91590074-69f6-45c0-8421-25a6f14be99e",
@@ -44,20 +44,17 @@ const handler = NextAuth({
         token.token = user.token as string;
         token.exp = user.exp;
       }
+
       return token;
     },
     async session({ session, token }) {
       session.user = { ...session.user, token: token.token as string };
 
-      if (token.exp) {
-        session.expires = new Date(token.exp as number * 1000).toISOString();
-      }
       return session;
     },
   },
   session: {
-    strategy: 'jwt',
-    maxAge: 24 * 60 * 60,
+    strategy: 'jwt'
   },
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
