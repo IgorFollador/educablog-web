@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react';
+
 type Post = {
   id: string;
   titulo: string;
@@ -22,7 +24,8 @@ interface PostListProps {
 }
 
 const PostList: React.FC<PostListProps> = ({ posts = [], isAdmin = false, onEdit, onDelete }) => {
-  // Adicionando uma verificação para garantir que 'posts' é um array
+  const [showTooltip, setShowTooltip] = useState<string | null>(null);
+
   if (!Array.isArray(posts) || posts.length === 0) {
     return <p>Nenhuma postagem encontrada.</p>;
   }
@@ -46,21 +49,43 @@ const PostList: React.FC<PostListProps> = ({ posts = [], isAdmin = false, onEdit
           <small className="text-gray-500">
             Publicado em: {new Date(post.dataCriacao).toLocaleDateString()}
           </small>
-          {/* Ações de admin */}
+
+          {/* Linha das ações e status */}
           {isAdmin && (
-            <div className="flex space-x-2 mt-4">
-              <button
-                onClick={() => onEdit && onEdit(post.id)}
-                className="py-1 px-3 bg-blue-600 text-white rounded hover:bg-blue-700"
+            <div className="flex justify-between items-center mt-4">
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => onEdit && onEdit(post.id)}
+                  className="py-1 px-3 bg-blue-600 text-white rounded hover:bg-blue-700"
+                >
+                  Editar
+                </button>
+                <button
+                  onClick={() => onDelete && onDelete(post.id)}
+                  className="py-1 px-3 bg-red-600 text-white rounded hover:bg-red-700"
+                >
+                  Deletar
+                </button>
+              </div>
+
+              {/* Bolinha de status com tooltip */}
+              <div
+                className="relative flex items-center"
+                onMouseEnter={() => setShowTooltip(post.id)}
+                onMouseLeave={() => setShowTooltip(null)}
               >
-                Editar
-              </button>
-              <button
-                onClick={() => onDelete && onDelete(post.id)}
-                className="py-1 px-3 bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                Deletar
-              </button>
+                <span
+                  className={`inline-block w-4 h-4 rounded-full ${
+                    post.ativo ? 'bg-green-500' : 'bg-red-500'
+                  }`}
+                  title={post.ativo ? 'Ativo' : 'Inativo'}
+                ></span>
+                {showTooltip === post.id && (
+                  <div className="absolute bottom-full right-0 mb-2 px-2 py-1 bg-gray-700 text-white text-xs rounded">
+                    {post.ativo ? 'Ativo' : 'Inativo'}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </li>
