@@ -98,6 +98,10 @@ const CreatePostPage = () => {
     }
   };
 
+  const handleCancel = () => {
+    router.push('/admin/');
+  };
+
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 p-5">
       <div className="bg-white shadow-md rounded-lg w-full max-w-2xl p-6">
@@ -168,13 +172,22 @@ const CreatePostPage = () => {
             </div>
             <span className="text-gray-700">{isActive ? 'Ativo' : 'Inativo'}</span>
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 w-full"
-          >
-            {loading ? 'Criando...' : 'Criar Postagem'}
-          </button>
+          <div className="flex justify-between">
+            <button
+              type="submit"
+              disabled={loading}
+              className="py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 w-full mr-2"
+            >
+              {loading ? 'Salvando...' : 'Salvar Alterações'}
+            </button>
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-600 w-full"
+            >
+              Cancelar
+            </button>
+          </div>
         </form>
       </div>
     </div>
