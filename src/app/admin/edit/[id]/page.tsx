@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 const EditPostPage = () => {
   const { data: session, status } = useSession();
@@ -135,6 +137,8 @@ const EditPostPage = () => {
   };
 
   return (
+    <>
+    <Header/>
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 p-5">
       <div className="bg-white shadow-md rounded-lg w-full max-w-2xl p-6">
         <h1 className="text-3xl font-bold text-center mb-6">Editar Postagem</h1>
@@ -223,6 +227,8 @@ const EditPostPage = () => {
         </form>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 };
 

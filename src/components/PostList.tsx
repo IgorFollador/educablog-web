@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 type Post = {
@@ -26,15 +27,25 @@ interface PostListProps {
 
 const PostList: React.FC<PostListProps> = ({ posts = [], isAdmin = false, isLoading = false, onEdit, onDelete }) => {
   const [showTooltip, setShowTooltip] = useState<string | null>(null);
+  const router = useRouter(); //para clicar no post
 
   if ((!Array.isArray(posts) || posts.length === 0) && !isLoading) {
     return <p>Nenhuma postagem encontrada.</p>;
   }
 
+  //para ver o post ao clicar no post
+  const handleViewPost = (postId: string) => {
+    router.push(`/view/${postId}`);
+  };
+
+
   return (
     <ul className="space-y-6">
       {posts.map((post) => (
-        <li key={post.id} className="border border-gray-300 p-4 rounded-lg shadow-md">
+        <li 
+         key={post.id} 
+         onClick={() => handleViewPost(post.id)} // adicionando para clicar no post
+         className="border border-gray-300 p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-100 transition">
           <h2 className="text-2xl font-semibold mb-2">{post.titulo}</h2>
           <p className="mb-4">{post.descricao}</p>
           {post.imagemUrl && (
@@ -56,13 +67,19 @@ const PostList: React.FC<PostListProps> = ({ posts = [], isAdmin = false, isLoad
             <div className="flex justify-between items-center mt-4">
               <div className="flex space-x-2">
                 <button
-                  onClick={() => onEdit && onEdit(post.id)}
+                   onClick={(e) => {
+                    e.stopPropagation(); // Impede a propagação do clique
+                    onEdit && onEdit(post.id);
+                  }}
                   className="py-1 px-3 bg-blue-600 text-white rounded hover:bg-blue-700"
                 >
                   Editar
                 </button>
                 <button
-                  onClick={() => onDelete && onDelete(post.id)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Impede a propagação do clique
+                    onDelete && onDelete(post.id);
+                  }}
                   className="py-1 px-3 bg-red-600 text-white rounded hover:bg-red-700"
                 >
                   Deletar
