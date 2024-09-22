@@ -1,9 +1,9 @@
 import Navbar from './NavBar';
 
-const Header = () => {
+const Header = ({ isLoggedIn = false}) => {
   return (
     <header>
-        <Navbar isLoggedIn={false} />
+        <Navbar isLoggedIn={isLoggedIn} />
     </header>
   );
 };

@@ -6,7 +6,6 @@ import { signIn, signOut } from 'next-auth/react';
 
 const Navbar = ({isLoggedIn}: { isLoggedIn: Boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
 
   const handleLogin = () => {
     signIn();
@@ -17,7 +16,7 @@ const Navbar = ({isLoggedIn}: { isLoggedIn: Boolean }) => {
   };
 
   return (
-      <nav className="bg-blue-950 fixed top-0 left-0 w-full z-100 shadow-black">
+      <nav className="z-50 bg-blue-950 fixed top-0 left-0 w-full z-100 shadow-black">
         <div className="container mx-auto flex justify-between items-center">
           
           {/* Logo centralizado em telas pequenas e alinhado à esquerda em telas grandes */}
