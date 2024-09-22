@@ -19,14 +19,15 @@ type Post = {
 interface PostListProps {
   posts: Post[];
   isAdmin?: boolean;
+  isLoading?: boolean;
   onEdit?: (postId: string) => void;
   onDelete?: (postId: string) => void;
 }
 
-const PostList: React.FC<PostListProps> = ({ posts = [], isAdmin = false, onEdit, onDelete }) => {
+const PostList: React.FC<PostListProps> = ({ posts = [], isAdmin = false, isLoading = false, onEdit, onDelete }) => {
   const [showTooltip, setShowTooltip] = useState<string | null>(null);
 
-  if (!Array.isArray(posts) || posts.length === 0) {
+  if ((!Array.isArray(posts) || posts.length === 0) && !isLoading) {
     return <p>Nenhuma postagem encontrada.</p>;
   }
 

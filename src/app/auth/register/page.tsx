@@ -122,7 +122,7 @@ const RegisterPage = () => {
                 CPF
               </label>
               <input 
-                maxLength="14" 
+                maxLength={14} 
                 placeholder="000.000.000-00"
                 type="text"
                 id="cpf"
@@ -137,7 +137,7 @@ const RegisterPage = () => {
                 Telefone
               </label>
               <input
-                maxLength="15" 
+                maxLength={15} 
                 placeholder="(99)99999-9999"
                 type="text"
                 id="phone"

@@ -6,6 +6,7 @@ import Navbar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import Spinner from '@/components/Spinner';
 import { jwtDecode } from 'jwt-decode';
+import Header from '@/components/Header';
 
 type AdminLayoutProps = {
   children: ReactNode;
@@ -48,11 +49,14 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   return (
     <>
-      <Navbar isLoggedIn={session ? true : false} />
-      { children }
+      <Header isLoggedIn={session ? true : false} />
+      <main style={{ paddingTop: '70px' }}>
+        { children }
+      </main>
       <Footer />
-      </>
+    </>
   );
+  
 };
 
 export default AdminLayout;
