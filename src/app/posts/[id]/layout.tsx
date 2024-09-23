@@ -12,7 +12,7 @@ export default function PostLayout({
     <>
       <div className="min-h-screen flex flex-col justify-between">
         <Header />
-        <main className="flex-grow pt-16 pb-16">
+        <main className="flex-grow pt-16">
           {children}
         </main>
         <Footer />
