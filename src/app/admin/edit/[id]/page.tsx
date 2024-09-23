@@ -3,10 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import dynamic from 'next/dynamic';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
-import 'react-quill/dist/quill.snow.css';
+import TextEditor from '@/components/TextEditor';
 
 const EditPostPage = () => {
   const { data: session, status } = useSession();
@@ -22,8 +21,6 @@ const EditPostPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const { id } = useParams();
-  
-  const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
   useEffect(() => {
     if (status === 'unauthenticated' || !session?.user?.token) {
@@ -169,11 +166,9 @@ const EditPostPage = () => {
           </div>
           <div className="mb-4">
             <label className="block text-gray-700">Descrição</label>
-            <ReactQuill 
-              theme="snow" 
-              value={description} 
-              onChange={setDescription} 
-              className="bg-white"
+            <TextEditor 
+              value={description}
+              setValue={setDescription}
             />
           </div>
           <div className="mb-4">

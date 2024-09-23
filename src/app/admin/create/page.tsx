@@ -4,10 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
-import dynamic from 'next/dynamic';
-import 'react-quill/dist/quill.snow.css';
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+import TextEditor from '@/components/TextEditor';
 
 const CreatePostPage = () => {
   const { data: session, status } = useSession();
@@ -133,11 +130,9 @@ const CreatePostPage = () => {
           </div>
           <div className="mb-4">
             <label className="block text-gray-700">Descrição</label>
-            <ReactQuill 
-              theme="snow" 
-              value={description} 
-              onChange={setDescription} 
-              className="bg-white"
+            <TextEditor 
+              value={description}
+              setValue={setDescription}
             />
           </div>
           <div className="mb-4">
