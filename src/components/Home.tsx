@@ -85,7 +85,7 @@ const Home = () => {
     };
 
     return (
-        <main className="max-w-3xl mx-auto m-10 p-4 pt-16">
+        <div className="max-w-3xl mx-auto m-10 p-4 pt-16">
             <h1 className="text-3xl font-bold">Postagens</h1>
             <small className="text-gray-500">Última atualização {lastUpdate}</small>
             <SearchBar onSearch={handleSearch} />
@@ -95,7 +95,7 @@ const Home = () => {
             
             <PostList posts={posts} isLoading={loading} />
             <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
-        </main>
+        </div>
     );
 };
 

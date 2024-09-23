@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation'
 import { signIn, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 const Navbar = ({isLoggedIn}: { isLoggedIn: Boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   const handleLogin = () => {
     signIn();
@@ -15,13 +16,22 @@ const Navbar = ({isLoggedIn}: { isLoggedIn: Boolean }) => {
     signOut({ callbackUrl: '/' });
   };
 
+  const handleRedirect = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isLoggedIn) {
+      router.push('/admin');
+    } else {
+      router.push('/'); 
+    }
+  };
+
   return (
       <nav className="z-50 bg-blue-950 fixed top-0 left-0 w-full z-100 shadow-black">
         <div className="container mx-auto flex justify-between items-center">
           
           {/* Logo centralizado em telas pequenas e alinhado à esquerda em telas grandes */}
           <div className="md:flex-1 md:justify-start flex justify-center p-5">
-            <Link href="/">
+            <Link href="#" onClick={handleRedirect}>
               <div className="flex items-center">
                 <Image
                   src="/logo.png"

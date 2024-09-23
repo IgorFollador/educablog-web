@@ -4,6 +4,10 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
+import dynamic from 'next/dynamic';
+import 'react-quill/dist/quill.snow.css';
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 const CreatePostPage = () => {
   const { data: session, status } = useSession();
@@ -53,6 +57,8 @@ const CreatePostPage = () => {
   }, [session]);
 
   const handleCategoryChange = (value: string) => {
+    value = value.toUpperCase();
+    
     setCategoryName(value);
 
     // Verifica se a categoria selecionada já existe
@@ -68,20 +74,27 @@ const CreatePostPage = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
+  
+    // Criação do objeto de payload
+    const postData: any = {
+      titulo: title,
+      descricao: description,
+      imagemUrl: imageUrl,
+      ativo: isActive,
+    };
+  
+    // Enviar categoria se o nome for válido
+    if (categoryName) {
+      postData.categoria = {
+        id: selectedCategoryId,
+        nome: categoryName.trim(),
+      };
+    }
+  
     try {
       await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/posts`,
-        {
-          titulo: title,
-          descricao: description,
-          imagemUrl: imageUrl,
-          ativo: isActive,
-          categoria: { 
-            id: selectedCategoryId, 
-            nome: categoryName 
-          },
-        },
+        postData,
         {
           headers: {
             Authorization: `Bearer ${session?.user?.token}`,
@@ -120,11 +133,11 @@ const CreatePostPage = () => {
           </div>
           <div className="mb-4">
             <label className="block text-gray-700">Descrição</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-              className="mt-1 block w-full p-2 border border-gray-300 rounded"
+            <ReactQuill 
+              theme="snow" 
+              value={description} 
+              onChange={setDescription} 
+              className="bg-white"
             />
           </div>
           <div className="mb-4">
@@ -150,7 +163,6 @@ const CreatePostPage = () => {
               value={categoryName}
               onChange={(e) => handleCategoryChange(e.target.value)}
               list="categories"
-              required
               className="mt-1 block w-full p-2 border border-gray-300 rounded"
             />
             <datalist id="categories">
