@@ -90,7 +90,7 @@ const AdminPage = () => {
   }, [session, status, currentPage, searchQuery, fetchPosts]);
 
   const handleEdit = (postId: string) => {
-    router.push(`/admin/edit/${postId}`);
+    router.push(`/admin/posts/edit/${postId}`);
   };
 
   const handleDelete = (postId: string) => {
@@ -128,7 +128,7 @@ const AdminPage = () => {
       <SearchBar onSearch={handleSearch} />
 
       <div className="flex justify-end mb-4">
-        <Link href="/admin/create" className="py-2 px-4 bg-green-600 text-white rounded hover:bg-green-700">
+        <Link href="/admin/posts/create" className="py-2 px-4 bg-green-600 text-white rounded hover:bg-green-700">
           Criar Nova Postagem
         </Link>
       </div>

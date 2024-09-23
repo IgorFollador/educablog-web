@@ -4,7 +4,7 @@ import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 
 
-const RegisterPage = () => {
+const CreateUserPage = () => {
     const [login, setLogin] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -171,11 +171,8 @@ const RegisterPage = () => {
           </form>
         </div>
       </div>
-
-
-
     );
 
 }
 
-export default RegisterPage;
+export default CreateUserPage;
