@@ -199,7 +199,6 @@ const EditPostPage = () => {
               value={categoryName}
               onChange={(e) => handleCategoryChange(e.target.value)}
               list="categories"
-              required
               className="mt-1 block w-full p-2 border border-gray-300 rounded"
             />
             <datalist id="categories">
