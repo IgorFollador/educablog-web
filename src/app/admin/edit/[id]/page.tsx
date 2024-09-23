@@ -1,11 +1,13 @@
 'use client';
 
+import axios from 'axios';
+import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import axios from 'axios';
 import { useParams } from 'next/navigation';
-import TextEditor from '@/components/TextEditor';
+
+const TextEditor = dynamic( () => import( '@/components/TextEditor' ), { ssr: false } );
 
 const EditPostPage = () => {
   const { data: session, status } = useSession();
