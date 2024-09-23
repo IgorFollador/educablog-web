@@ -49,11 +49,13 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   return (
     <>
-      <Header isLoggedIn={session ? true : false} />
-      <main className="flex-grow pt-16">
-        {children}
-      </main>
-      <Footer />
+      <div className="flex flex-col min-h-screen">
+        <Header isLoggedIn={!!session} />
+        <main className="flex-grow pt-16">
+          {children}
+        </main>
+        <Footer />
+    </div>
     </>
   );
   

@@ -6,11 +6,13 @@ import Home from '../components/Home';
 
 const Index = () => {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Header />
-      <Home />
-      <Footer/>
-    </>
+      <main className="flex-grow">
+        <Home />
+      </main>
+      <Footer />
+    </div>
   );
 };
 
