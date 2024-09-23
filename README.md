@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# EducaBlog-Web
 
-## Getting Started
+Este projeto é um aplicativo web construído com **Next.js** e outras tecnologias de front-end, como **React**, **Styled-Components** e **Tailwind CSS**. O projeto também integra funcionalidades de autenticação com **NextAuth.js** e usa **Axios** para realizar requisições HTTP para APIs externas.
 
-First, run the development server:
+## Pré-requisitos
+
+Antes de começar, certifique-se de que sua máquina tenha as seguintes ferramentas instaladas:
+
+- **Node.js** (versão recomendada: 18 ou superior)
+- **npm** (gerenciador de pacotes que vem junto com o Node.js) ou **Yarn** como alternativa.
+
+## Instalação
+
+Siga os passos abaixo para configurar e executar o projeto em seu ambiente local:
+
+### 1. Clone o repositório
+
+Abra o terminal e execute o comando para clonar o repositório do projeto:
+
+```bash
+git clone https://github.com/IgorFollador/educablog-web.git
+```
+
+### 2. Acesse o diretório do projeto
+
+Entre no diretório do projeto clonado:
+
+```bash
+cd educablog-web
+```
+
+### 3. Instale as dependências
+
+Use o npm ou yarn para instalar todas as dependências necessárias:
+
+```bash
+npm install
+```
+
+ou
+
+```bash
+yarn install
+```
+
+### 4. Configuração das variáveis de ambiente
+
+Crie um arquivo .env.local na raiz do projeto e adicione as variáveis de ambiente fornecidas para configuração:
+
+```bash
+NEXTAUTH_SECRET="SuperSecretKeyForNextAuth123!ChangeMe"
+NEXT_PUBLIC_SITE_URL="https://educablog-web.vercel.app/"
+NEXT_PUBLIC_API_URL="https://apl-back-educablog-1.onrender.com"
+NEXT_PUBLIC_POSTS_LIMIT=10
+NEXT_PUBLIC_DISQUS_NAME="educablog-1"
+```
+Estas variáveis são essenciais para o funcionamento correto do aplicativo, incluindo a autenticação, a comunicação com a API e a integração com o Disqus para comentários.
+
+### 5. Executando o projeto localmente
+
+Para iniciar o servidor de desenvolvimento, execute o seguinte comando:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ou
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+yarn dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Este comando irá iniciar o servidor em modo de desenvolvimento. Você pode acessar a aplicação no seu navegador através do endereço:
+```bash
+http://localhost:3000
+```
 
-## Learn More
+#### OBS:
+- Aqui estão os principais scripts disponíveis no package.json:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run dev: Inicia o servidor de desenvolvimento.
+npm run build: Compila o projeto para produção.
+npm start: Inicia o servidor com a build otimizada para produção.
+npm run lint: Executa o ESLint para verificação de boas práticas de código.
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Para instalar a API do projeto localmente [acesse aqui](https://github.com/IgorFollador/educablog-api/)
