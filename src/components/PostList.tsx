@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -15,6 +15,14 @@ type Post = {
     id: string;
     nome: string;
   };
+  usuarioCriacao?: {
+    id: string;
+    login: string;
+    pessoa?: {
+      id: string;
+      nome: string;
+    };
+  };
 };
 
 interface PostListProps {
@@ -25,29 +33,54 @@ interface PostListProps {
   onDelete?: (postId: string) => void;
 }
 
-const PostList: React.FC<PostListProps> = ({ posts = [], isAdmin = false, isLoading = false, onEdit, onDelete }) => {
+const PostList: React.FC<PostListProps> = ({
+  posts = [],
+  isAdmin = false,
+  isLoading = false,
+  onEdit,
+  onDelete,
+}) => {
   const [showTooltip, setShowTooltip] = useState<string | null>(null);
-  const router = useRouter(); //para clicar no post
+  const router = useRouter();
+
+  const handlePostClick = (postId: string) => {
+    router.push(`/posts/${postId}`); // Redireciona para a página de visualização do post
+  };
+
+  const removeHtmlTags = (description: string) => {
+    return description.replace(/<\/?[^>]+(>|$)/g, "");
+  };
+
+  const truncateDescription = (description: string, length: number) => {
+    const plainTextDescription = removeHtmlTags(description); // Remover tags HTML
+    if (plainTextDescription.length > length) {
+      return (
+        <>
+          {plainTextDescription.substring(0, length)}...
+          <br />
+          <span className="text-blue-600 font-semibold underline">Para mais, acesse o post.</span>
+        </>
+      );
+    }
+    return plainTextDescription;
+  };
 
   if ((!Array.isArray(posts) || posts.length === 0) && !isLoading) {
     return <p>Nenhuma postagem encontrada.</p>;
   }
 
-  //para ver o post ao clicar no post
-  const handleViewPost = (postId: string) => {
-    router.push(`/view/${postId}`);
-  };
-
-
   return (
     <ul className="space-y-6">
       {posts.map((post) => (
-        <li 
-         key={post.id} 
-         onClick={() => handleViewPost(post.id)} // adicionando para clicar no post
-         className="border border-gray-300 p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-100 transition">
+        <li
+          key={post.id}
+          className="border border-gray-300 p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-100 transition"
+          onClick={() => handlePostClick(post.id)}
+        >
           <h2 className="text-2xl font-semibold mb-2">{post.titulo}</h2>
-          <p className="mb-4">{post.descricao}</p>
+          <p className="mb-4">
+            {truncateDescription(post.descricao, 150)}
+          </p>
           {post.imagemUrl && (
             <div className="w-full h-64 mb-4">
               <img
@@ -57,7 +90,15 @@ const PostList: React.FC<PostListProps> = ({ posts = [], isAdmin = false, isLoad
               />
             </div>
           )}
-          {post.categoria && <p className="italic text-gray-600">Categoria: {post.categoria.nome}</p>}
+          <p className="italic text-gray-600">
+            {post.categoria && <>Categoria: {post.categoria.nome.toUpperCase()}</>}
+            {post.usuarioCriacao?.pessoa?.nome && (
+              <>
+                {post.categoria ? ' | ' : ''}
+                Autor: {post.usuarioCriacao.pessoa.nome.toUpperCase()}
+              </>
+            )}
+          </p>
           <small className="text-gray-500">
             Publicado em: {new Date(post.dataCriacao).toLocaleDateString()}
           </small>
@@ -67,8 +108,8 @@ const PostList: React.FC<PostListProps> = ({ posts = [], isAdmin = false, isLoad
             <div className="flex justify-between items-center mt-4">
               <div className="flex space-x-2">
                 <button
-                   onClick={(e) => {
-                    e.stopPropagation(); // Impede a propagação do clique
+                  onClick={(e) => {
+                    e.stopPropagation();
                     onEdit && onEdit(post.id);
                   }}
                   className="py-1 px-3 bg-blue-600 text-white rounded hover:bg-blue-700"
@@ -77,7 +118,7 @@ const PostList: React.FC<PostListProps> = ({ posts = [], isAdmin = false, isLoad
                 </button>
                 <button
                   onClick={(e) => {
-                    e.stopPropagation(); // Impede a propagação do clique
+                    e.stopPropagation();
                     onDelete && onDelete(post.id);
                   }}
                   className="py-1 px-3 bg-red-600 text-white rounded hover:bg-red-700"
@@ -86,7 +127,7 @@ const PostList: React.FC<PostListProps> = ({ posts = [], isAdmin = false, isLoad
                 </button>
               </div>
 
-              {/* Bolinha de status com tooltip */}
+              {/* Status com tooltip */}
               <div
                 className="relative flex items-center"
                 onMouseEnter={() => setShowTooltip(post.id)}

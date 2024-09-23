@@ -15,8 +15,8 @@ const Footer = () => {
               <div className="flex items-center">
                 <Image
                   src="/logo.png"
-                  width={20} // Ajuste o tamanho conforme necessário
-                  height={20} // Ajuste o tamanho conforme necessário
+                  width={20}
+                  height={20}
                   className="mr-2"
                   alt="Logo"
                 />

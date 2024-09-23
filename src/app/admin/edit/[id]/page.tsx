@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import dynamic from 'next/dynamic';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import 'react-quill/dist/quill.snow.css';
 
 const EditPostPage = () => {
   const { data: session, status } = useSession();
@@ -16,11 +16,14 @@ const EditPostPage = () => {
   const [categoryName, setCategoryName] = useState('');
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [authorName, setAuthorName] = useState<string | null>(null);
   const [isActive, setIsActive] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const { id } = useParams();
+  
+  const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
   useEffect(() => {
     if (status === 'unauthenticated' || !session?.user?.token) {
@@ -73,9 +76,14 @@ const EditPostPage = () => {
           setTitle(post.titulo);
           setDescription(post.descricao);
           setImageUrl(post.imagemUrl);
-          setSelectedCategoryId(post.categoria.id);
-          setCategoryName(post.categoria.nome);
           setIsActive(post.ativo);
+          if (post.categoria) {
+            setSelectedCategoryId(post.categoria.id);
+            setCategoryName(post.categoria.nome.toUpperCase());
+          }
+          if (post.usuarioCriacao?.pessoa?.nome) {
+            setAuthorName(post.usuarioCriacao.pessoa.nome);
+          }
         } catch (err) {
           console.error('Erro ao carregar dados da postagem:', err);
           setError('Erro ao carregar dados da postagem.');
@@ -87,6 +95,8 @@ const EditPostPage = () => {
   }, [id, session]);
 
   const handleCategoryChange = (value: string) => {
+    value = value.toUpperCase();
+
     setCategoryName(value);
 
     // Verifica se a categoria selecionada já existe
@@ -103,19 +113,24 @@ const EditPostPage = () => {
     setLoading(true);
     setError('');
 
+    const postData: any = {
+      titulo: title,
+      descricao: description,
+      imagemUrl: imageUrl,
+      ativo: isActive,
+    };
+  
+    if (categoryName) {
+      postData.categoria = {
+        id: selectedCategoryId,
+        nome: categoryName.trim(),
+      };
+    }
+
     try {
       await axios.put(
         `${process.env.NEXT_PUBLIC_API_URL}/posts/${id}`,
-        {
-          titulo: title,
-          descricao: description,
-          imagemUrl: imageUrl,
-          ativo: isActive,
-          categoria: { 
-            id: selectedCategoryId, 
-            nome: categoryName 
-          },
-        },
+        postData,
         {
           headers: {
             Authorization: `Bearer ${session?.user?.token}`,
@@ -156,11 +171,11 @@ const EditPostPage = () => {
           </div>
           <div className="mb-4">
             <label className="block text-gray-700">Descrição</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-              className="mt-1 block w-full p-2 border border-gray-300 rounded"
+            <ReactQuill 
+              theme="snow" 
+              value={description} 
+              onChange={setDescription} 
+              className="bg-white"
             />
           </div>
           <div className="mb-4">
@@ -208,6 +223,14 @@ const EditPostPage = () => {
             </div>
             <span className="text-gray-700">{isActive ? 'Ativo' : 'Inativo'}</span>
           </div>
+          {authorName && (
+            <div className="mb-4">
+              <label className="block text-gray-700">Autor</label>
+              <p className="mt-1 block w-full p-2 border border-gray-300 rounded bg-gray-100">
+                {authorName}
+              </p>
+            </div>
+          )}
           <div className="flex justify-between">
             <button
               type="submit"
