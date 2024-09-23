@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import { DiscussionEmbed } from 'disqus-react';
 import Spinner from '@/components/Spinner';
 import DOMPurify from 'dompurify';
+import { useSession } from 'next-auth/react';
 
 interface DisqusConfig {
   url?: string;
@@ -16,6 +17,7 @@ interface DisqusConfig {
 }
 
 const ViewPostPage = () => {
+  const { data: session } = useSession();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
@@ -55,7 +57,11 @@ const ViewPostPage = () => {
   }, [id]);
 
   const handleBack = () => {
-    router.push('/');
+    if (session?.user?.token) {
+      router.push('/admin');
+    } else {
+      router.push('/'); 
+    }
   };
 
   const disqusShortname = process.env.NEXT_PUBLIC_DISQUS_NAME || "";

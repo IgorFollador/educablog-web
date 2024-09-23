@@ -50,8 +50,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   return (
     <>
       <Header isLoggedIn={session ? true : false} />
-      <main style={{ paddingTop: '70px' }}>
-        { children }
+      <main className="flex-grow pt-16">
+        {children}
       </main>
       <Footer />
     </>
