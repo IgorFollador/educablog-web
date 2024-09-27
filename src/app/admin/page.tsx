@@ -8,6 +8,7 @@ import PostList from '../../components/PostList';
 import Pagination from '../../components/Pagination';
 import ConfirmModal from '../../components/ConfirmModal';
 import SearchBar from '../../components/SearchBar';
+import { FaUserPlus, FaFileAlt } from 'react-icons/fa'; // Importando ícones
 import axios from 'axios';
 
 type Post = {
@@ -122,36 +123,48 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-5">
-      <h1 className="text-3xl font-bold text-center mb-6">Administração de Postagens</h1>
-      
-      <SearchBar onSearch={handleSearch} />
-
-      <div className="flex justify-end mb-4">
-        <Link href="/admin/posts/create" className="py-2 px-4 bg-green-600 text-white rounded hover:bg-green-700">
-          Criar Nova Postagem
+    <div className="flex justify-center">
+      {/* Dock Lateral */}
+      <div className="fixed top-44 left-[5%] bg-gray-800 p-4 flex flex-col items-center space-y-4 text-white rounded-lg shadow-lg">
+        <h2 className="text-lg font-bold text-white">Ações Administrativas</h2>
+        
+        <Link href="/admin/posts/create" title="Criar Nova Postagem" className="flex items-center space-x-3 p-4 w-full bg-gray-700 hover:bg-gray-600 hover:text-green-300 cursor-pointer rounded-lg">
+          <FaFileAlt className="w-8 h-8" />
+          <span className="font-bold">ADICIONAR POST</span>
+        </Link>
+        
+        <Link href="/admin/users/create" title="Adicionar Usuário" className="flex items-center space-x-3 p-4 w-full bg-gray-700 hover:bg-gray-600 hover:text-blue-300 cursor-pointer rounded-lg">
+          <FaUserPlus className="w-8 h-8" />
+          <span className="font-bold">ADICIONAR USUÁRIO</span>
         </Link>
       </div>
 
-      {error && <p className="text-red-500">{error}</p>}
-      {loading ? (
-        <p className="text-center">Carregando postagens...</p>
-      ) : (
-        <>
-          <PostList posts={posts} isLoading={loading} isAdmin onEdit={handleEdit} onDelete={handleDelete} />
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
-        </>
-      )}
+      {/* Conteúdo principal */}
+      <div className="max-w-4xl mx-auto p-5 w-full">
+        <h1 className="text-3xl font-bold text-center mb-6">Administração de Postagens</h1>
 
-      {showModal && (
-        <ConfirmModal
-          isOpen={showModal}
-          onClose={() => setShowModal(false)}
-          onConfirm={confirmDelete}
-          title="Confirmar Deleção"
-          message="Tem certeza que deseja deletar esta postagem?"
-        />
-      )}
+        <SearchBar onSearch={handleSearch} />
+        
+        {error && <p className="text-red-500">{error}</p>}
+        {loading ? (
+          <p className="text-center">Carregando postagens...</p>
+        ) : (
+          <>
+            <PostList posts={posts} isLoading={loading} isAdmin onEdit={handleEdit} onDelete={handleDelete} />
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+          </>
+        )}
+
+        {showModal && (
+          <ConfirmModal
+            isOpen={showModal}
+            onClose={() => setShowModal(false)}
+            onConfirm={confirmDelete}
+            title="Confirmar Deleção"
+            message="Tem certeza que deseja deletar esta postagem?"
+          />
+        )}
+      </div>
     </div>
   );
 };
