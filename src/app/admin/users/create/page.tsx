@@ -59,6 +59,10 @@ const CreateUserPage = () => {
 
     }
 
+    const handleCancel = () => {
+      router.push('/admin/');
+    };
+
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="w-full max-w-md p-8 space-y-8 bg-white rounded shadow-lg">
@@ -160,14 +164,23 @@ const CreateUserPage = () => {
                 className="w-full px-3 py-2 mt-1 border rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            <button
-              type="submit"
-              className="w-full py-2 text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={loading}
-              onClick={handleRegister}
-            >
-              {loading ? 'Registrando...' : 'Registrar'}
-            </button>
+            <div className="flex justify-between">
+              <button
+                type="submit"
+                className="py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 w-full mr-2"
+                disabled={loading}
+                onClick={handleRegister}
+              >
+                {loading ? 'Registrando...' : 'Registrar'}
+              </button>
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-600 w-full"
+              >
+                Cancelar
+              </button>
+            </div>
           </form>
         </div>
       </div>

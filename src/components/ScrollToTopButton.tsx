@@ -9,8 +9,10 @@ function ScrollToTopButton() {
     function handleScroll() {
       const currentScrollPos = window.scrollY;
 
-      if (currentScrollPos < prevScrollPos.current) {
-        setIsVisible(true);
+      if (currentScrollPos === 0) {
+        setIsVisible(false); 
+      } else if (currentScrollPos < prevScrollPos.current) {
+        setIsVisible(true); 
       } else {
         setIsVisible(false);
       }
