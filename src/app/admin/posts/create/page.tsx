@@ -15,7 +15,7 @@ const postSchema = z.object({
   imagemUrl: z.string().url('URL de imagem inválida').optional(),
   ativo: z.boolean(),
   categoria: z.object({
-    id: z.string().optional(),
+    id: z.string().optional().nullable(),
     nome: z.string().optional(),
   }),
 });
