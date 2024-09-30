@@ -5,8 +5,20 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { z } from 'zod';
 
-const TextEditor = dynamic( () => import( '@/components/TextEditor' ), { ssr: false } );
+const TextEditor = dynamic(() => import('@/components/TextEditor'), { ssr: false });
+
+const postSchema = z.object({
+  titulo: z.string().min(3, 'O título é obrigatório e deve conter no mínimo 3 caracteres'),
+  descricao: z.string().min(1, 'A descrição é obrigatória'),
+  imagemUrl: z.string().url('URL de imagem inválida').optional(),
+  ativo: z.boolean(),
+  categoria: z.object({
+    id: z.string().optional(),
+    nome: z.string().optional(),
+  }),
+});
 
 const CreatePostPage = () => {
   const { data: session, status } = useSession();
@@ -57,7 +69,7 @@ const CreatePostPage = () => {
 
   const handleCategoryChange = (value: string) => {
     value = value.toUpperCase();
-    
+
     setCategoryName(value);
 
     // Verifica se a categoria selecionada já existe
@@ -73,7 +85,7 @@ const CreatePostPage = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-  
+    
     // Criação do objeto de payload
     const postData: any = {
       titulo: title,
@@ -89,11 +101,20 @@ const CreatePostPage = () => {
         nome: categoryName.trim(),
       };
     }
-  
+
+    const validation = postSchema.safeParse(postData);
+
+    if (!validation.success) {
+      const errors = validation.error.issues.map((issue) => issue.message).join(', ');
+      setError(errors);
+      setLoading(false);
+      return;
+    }
+
     try {
       await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/posts`,
-        postData,
+        validation.data,
         {
           headers: {
             Authorization: `Bearer ${session?.user?.token}`,
@@ -132,10 +153,7 @@ const CreatePostPage = () => {
           </div>
           <div className="mb-4">
             <label className="block text-gray-700">Descrição</label>
-            <TextEditor 
-              value={description}
-              setValue={setDescription}
-            />
+            <TextEditor value={description} setValue={setDescription} />
           </div>
           <div className="mb-4">
             <label className="block text-gray-700">URL da Imagem (opcional)</label>
@@ -174,9 +192,15 @@ const CreatePostPage = () => {
           >
             <label className="block text-gray-700 mb-2">Status da Postagem</label>
             <div className="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
-              <div className={`toggle-label block h-6 rounded-full cursor-pointer ${isActive ? 'bg-green-400' : 'bg-gray-300'}`} />
               <div
-                className={`toggle-checkbox absolute top-0 left-0 h-6 w-6 rounded-full bg-white border-4 transition-transform duration-200 ease-in transform ${isActive ? 'translate-x-6 border-green-400' : 'translate-x-0 border-gray-300'}`}
+                className={`toggle-label block h-6 rounded-full cursor-pointer ${
+                  isActive ? 'bg-green-400' : 'bg-gray-300'
+                }`}
+              />
+              <div
+                className={`toggle-checkbox absolute top-0 left-0 h-6 w-6 rounded-full bg-white border-4 transition-transform duration-200 ease-in transform ${
+                  isActive ? 'translate-x-6 border-green-400' : 'translate-x-0 border-gray-300'
+                }`}
               />
             </div>
             <span className="text-gray-700">{isActive ? 'Ativo' : 'Inativo'}</span>
